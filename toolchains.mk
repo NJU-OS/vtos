@@ -1,8 +1,15 @@
+# restrict only works on bash
+SHELL = /bin/bash
+
 ################################################################################
 # Toolchains
 ################################################################################
 ROOT				?= $(CURDIR)/..
 TOOLCHAIN_ROOT 			?= $(ROOT)/toolchains
+
+EXIST_YES 	?= YES
+EXIST_NO	?= NO
+TOOLCHAIN_REPO ?= https://github.com/NJU-OS/toolchains.git
 
 AARCH32_PATH 			?= $(TOOLCHAIN_ROOT)/aarch32
 AARCH32_CROSS_COMPILE 		?= $(AARCH32_PATH)/bin/arm-linux-gnueabihf-
@@ -32,8 +39,26 @@ define dltc
 	fi
 endef
 
+# check whether we have already downloaded the toolchains
+TOOLCHAIN_FILE = $(TOOLCHAIN_ROOT)/${AARCH32_GCC_VERSION}.tar.xz
+EXIST = $(shell if [ -f $(TOOLCHAIN_FILE) ]; then echo $(EXIST_YES); else echo $(EXIST_NO); fi)
+
+
 .PHONY: toolchains
-toolchains: aarch32 aarch64 aarch64-legacy
+toolchains: exist aarch32 aarch64 aarch64-legacy
+	$(call dltc,$(AARCH32_PATH),$(SRC_AARCH32_GCC),$(AARCH32_GCC_VERSION))
+	$(call dltc,$(AARCH64_PATH),$(SRC_AARCH64_GCC),$(AARCH64_GCC_VERSION))
+	$(call dltc,$(LEGACY_AARCH64_PATH),$(LEGACY_SRC_AARCH64_GCC),$(LEGACY_AARCH64_GCC_VERSION))
+
+.PHONY: exist
+exist:
+	@set -e
+	@if [ "$(EXIST)" == "NO" ]; then \
+		echo "tools: $(TOOLCHAIN_FILE) not exist, so will downloading..."; \
+		pushd $(ROOT); \
+		git clone $(TOOLCHAIN_REPO); \
+		popd ;\
+	fi
 
 .PHONY: aarch32
 aarch32:
@@ -46,4 +71,5 @@ aarch64:
 .PHONY: aarch64-legacy
 aarch64-legacy:
 	$(call dltc,$(LEGACY_AARCH64_PATH),$(LEGACY_SRC_AARCH64_GCC),$(LEGACY_AARCH64_GCC_VERSION))
+
 
