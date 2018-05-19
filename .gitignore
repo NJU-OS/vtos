@@ -1,0 +1,6 @@
+# tmp file
+*.swp
+
+# garbege
+tags
+cscope*
