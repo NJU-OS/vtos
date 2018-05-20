@@ -4,3 +4,6 @@
 # garbege
 tags
 cscope*
+
+# compiled file
+out/*
