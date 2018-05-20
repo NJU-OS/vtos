@@ -40,12 +40,25 @@ define dltc
 endef
 
 # check whether we have already downloaded the toolchains
-TOOLCHAIN_FILE = ${AARCH32_GCC_VERSION}.tar.gz
+TOOLCHAIN_FILE = $(TOOLCHAIN_ROOT)/${AARCH32_GCC_VERSION}.tar.xz
 EXIST = $(shell if [ -f $(TOOLCHAIN_FILE) ]; then echo $(EXIST_YES); else echo $(EXIST_NO); fi)
 
 
 .PHONY: toolchains
 toolchains: exist aarch32 aarch64 aarch64-legacy
+	$(call dltc,$(AARCH32_PATH),$(SRC_AARCH32_GCC),$(AARCH32_GCC_VERSION))
+	$(call dltc,$(AARCH64_PATH),$(SRC_AARCH64_GCC),$(AARCH64_GCC_VERSION))
+	$(call dltc,$(LEGACY_AARCH64_PATH),$(LEGACY_SRC_AARCH64_GCC),$(LEGACY_AARCH64_GCC_VERSION))
+
+.PHONY: exist
+exist:
+	@set -e
+	@if [ "$(EXIST)" == "NO" ]; then \
+		echo "tools: $(TOOLCHAIN_FILE) not exist, so will downloading..."; \
+		pushd $(ROOT); \
+		git clone $(TOOLCHAIN_REPO); \
+		popd ;\
+	fi
 
 .PHONY: aarch32
 aarch32:
@@ -59,12 +72,4 @@ aarch64:
 aarch64-legacy:
 	$(call dltc,$(LEGACY_AARCH64_PATH),$(LEGACY_SRC_AARCH64_GCC),$(LEGACY_AARCH64_GCC_VERSION))
 
-.PHONY: exist
-exist:
-	@set -e
-	@echo "repo: $(TOOLCHAIN_REPO) not exist, so will downloading..."
-	@if [ "$(EXIST)" == "NO" ]; then \
-		pushd $(ROOT); \
-		git clone $(TOOLCHAIN_REPO); \
-		popd ;\
-	fi
+
