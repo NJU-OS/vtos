@@ -1,3 +1,4 @@
+# restrict only works on bash
 SHELL = /bin/bash
 
 # It can happen that a makefile calls us, which contains an 'export' directive
