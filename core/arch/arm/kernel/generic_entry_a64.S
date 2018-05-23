@@ -67,26 +67,15 @@
 .section .text.boot
 FUNC _start , :
 	// SNOW
-	ldr x0, =0x22150D0
-	ldr w1, =0x1
-	str w1, [x0]
+/*
+	ldr w0, =0x44434241
+	ldr x1, =0x3100000
+	strb w0, [x1]
 	dmb sy
-	ldr x0, =0x22150CC
-    ldr w1, =0x0
-    str w1, [x0]
-    dmb sy
-	ldr x0, =0x22150C0
-    ldr w1, =0x11
-    str w1, [x0]
-    dmb sy
+*/
+	bl sp_test
 dead:
 	b dead
-
-	mov	x19, x0		/* Save pagable part address */
-	// SNOW
-	mov x21, x3
-	mov	x20, x2		/* Save DT address */
-
 	adr	x0, reset_vect_table
 	msr	vbar_el1, x0
 	isb
@@ -98,32 +87,10 @@ dead:
 	msr	sctlr_el1, x0
 	isb
 
-#ifdef CFG_WITH_PAGER
-	/*
-	 * Move init code into correct location
-	 *
-	 * The binary is built as:
-	 * [Pager code, rodata and data] : In correct location
-	 * [Init code and rodata] : Should be copied to __text_init_start
-	 * [Hashes] : Should be saved before clearing bss
-	 *
-	 * When we copy init code and rodata into correct location we don't
-	 * need to worry about hashes being overwritten as size of .bss,
-	 * .heap, .nozi and .heap3 is much larger than the size of init
-	 * code and rodata and hashes.
-	 */
-	adr	x0, __text_init_start	/* dst */
-	adr	x1, __data_end 	/* src */
-	adr	x2, __rodata_init_end	/* dst limit */
-copy_init:
-	ldp	x3, x4, [x1], #16
-	stp	x3, x4, [x0], #16
-	cmp	x0, x2
-	b.lt	copy_init
-#endif
-
 	/* Setup SP_EL0 and SP_EL1, SP will be set to SP_EL0 */
 	set_sp
+	bl sp_test
+
 
 	/* Enable aborts now that we can receive exceptions */
 	msr	daifclr, #DAIFBIT_ABT
@@ -194,6 +161,13 @@ copy_init:
 	smc	#0
 	b	.	/* SMC should not return */
 END_FUNC _start
+FUNC sp_test , :
+	ldr w0, =0x44434241
+	ldr x1, =0x3100000
+	strb w0, [x1]
+	dmb sy
+	ret
+END_FUNC sp_test
 
 
 .section .text.cpu_on_handler
