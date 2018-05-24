@@ -67,15 +67,6 @@
 .section .text.boot
 FUNC _start , :
 	// SNOW
-/*
-	ldr w0, =0x44434241
-	ldr x1, =0x3100000
-	strb w0, [x1]
-	dmb sy
-*/
-	bl sp_test
-dead:
-	b dead
 	adr	x0, reset_vect_table
 	msr	vbar_el1, x0
 	isb
@@ -89,27 +80,19 @@ dead:
 
 	/* Setup SP_EL0 and SP_EL1, SP will be set to SP_EL0 */
 	set_sp
-	bl sp_test
-
 
 	/* Enable aborts now that we can receive exceptions */
 	msr	daifclr, #DAIFBIT_ABT
 
 	adr	x0, __text_start
-#ifdef CFG_WITH_PAGER
-	adrp	x1, __init_end
-	add	x1, x1, :lo12:__init_end
-#else
 	adrp	x1, __end
 	add	x1, x1, :lo12:__end
-	//adrp    x1, _end_of_ram
-    //add x1, x1, :lo12:_end_of_ram
-#endif
 	sub	x1, x1, x0
 	bl	inv_dcache_range
 
-	mov x0, x21
-	bl snow_true
+	bl sn_test
+dead:
+	b dead
 	/* Enable Console */
 	bl	console_init
 
