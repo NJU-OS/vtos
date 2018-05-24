@@ -38,7 +38,8 @@
 - snow
 
 #### 主要更新内容：
-- 完成类似printf的串口输出函数sn_printf，支持可变长参数；sn_test函数对sn_printf函数进行了测试，包括%s，%x和%d参数
+- 完成类似printf的串口输出函数sn_printf，支持可变长参数
+- sn_test函数对sn_printf函数进行了测试，包括%s，%x和%d参数
 
 #### 主要涉及的文件：
 
