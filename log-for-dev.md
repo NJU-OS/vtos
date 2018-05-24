@@ -30,4 +30,22 @@
 
 
 
+---
+#### 更新时间: 
+`2018-05-24`
 
+#### 负责人员：
+- snow
+
+#### 主要更新内容：
+- 完成类似printf的串口输出函数sn_printf，支持可变长参数；sn_test函数对sn_printf函数进行了测试，包括%s，%x和%d参数
+
+#### 主要涉及的文件：
+
+```
+* /core/arch/arm/kernel/generic_entry_a64.S
+* /kernel/proc.h
+* /kernel/proc.c
+* /lib/libutils/ext/include/trace.h
+* /lib/libutee/trace_ext.c
+```
