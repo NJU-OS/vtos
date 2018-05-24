@@ -52,8 +52,6 @@ int trace_get_level(void);
 /* Internal functions used by the macros below */
 void trace_printf(const char *func, int line, int level, bool level_ok,
 		  const char *fmt, ...) __printf(5, 6);
-// SNOWFLY
-void sn_printf(const char * fmt, ...);
 void flexsc_debug_nolock(const char *fmt, ...);
 
 #define trace_printf_helper(level, level_ok, ...) \

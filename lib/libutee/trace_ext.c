@@ -108,34 +108,3 @@ flexsc_debug_nolock(const char *fmt, ...) {
     __flexsc_vsnprintf(s_buf, sizeof(s_buf), fmt, arg);
     va_end(arg);
 }
-
-void sn_printf(const char *fmt __unused, ...)
-{
-/*
-	char to_format[MAX_PRINT_SIZE];
-	static const char failed[] = "snprintf failed";
-	va_list ap;
-	int s;
-*/
-
-	//trace_ext_puts("hello printf\n");
-
-	va_list ap;
-	va_start(ap, fmt);
-	va_arg(ap, int);
-	va_end(ap);
-	return ;
-/*
-	va_start(ap, fmt);
-	s = vsnprintf(to_format, sizeof(to_format), fmt, ap);
-	va_end(ap);
-
-	if (s < 0) {
-		puts(failed);
-		return s;
-	}
-	puts(to_format);
-
-	return s;
-*/
-}
