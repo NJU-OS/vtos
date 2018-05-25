@@ -89,11 +89,11 @@ FUNC _start , :
 	add	x1, x1, :lo12:__end
 	sub	x1, x1, x0
 	bl	inv_dcache_range
-	bl sn_test
-dead:
-	b dead
+	//bl sn_test
 
 	bl	core_init_mmu_map
+dead:
+	b dead
 	bl	core_init_mmu_regs
 	bl	cpu_mmu_enable
 	bl	cpu_mmu_enable_icache

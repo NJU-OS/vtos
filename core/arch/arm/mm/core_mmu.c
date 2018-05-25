@@ -107,7 +107,7 @@ register_sdp_mem(CFG_TEE_SDP_MEM_BASE, CFG_TEE_SDP_MEM_SIZE);
 
 register_phys_mem(MEM_AREA_TEE_RAM, CFG_TEE_RAM_START, CFG_TEE_RAM_PH_SIZE);
 register_phys_mem(MEM_AREA_TA_RAM, CFG_TA_RAM_START, CFG_TA_RAM_SIZE);
-register_phys_mem(MEM_AREA_NSEC_SHM, CFG_SHMEM_START, CFG_SHMEM_SIZE);
+//register_phys_mem(MEM_AREA_NSEC_SHM, CFG_SHMEM_START, CFG_SHMEM_SIZE);
 #ifdef DEVICE0_PA_BASE
 register_phys_mem(DEVICE0_TYPE, DEVICE0_PA_BASE, DEVICE0_SIZE);
 #endif
@@ -553,11 +553,6 @@ void core_init_mmu_map(void)
 	struct tee_mmap_region *map;
 	size_t n;
 
-	for (n = 0; n < ARRAY_SIZE(secure_only); n++) {
-		if (pbuf_intersects(nsec_shared, secure_only[n].paddr,
-				    secure_only[n].size))
-			panic("Invalid memory access config: sec/nsec");
-	}
 
 	if (!mem_map_inited)
 		init_mem_map(static_memory_map, ARRAY_SIZE(static_memory_map));
