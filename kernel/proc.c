@@ -284,7 +284,7 @@ TEE_Result sn_tee_ta_exec(void* ta_addr, size_t pn)
     return res;
 }
 
-static void sn_putc(uint8_t ch)
+void sn_putc(uint8_t ch)
 {
 	uint8_t tp = (*(volatile uint8_t *)0x3100014) & 0x20;
 	while(tp == 0)
@@ -311,5 +311,6 @@ void sn_printf(const char* fmt, ...)
 }
 
 void sn_test(void) {
-	sn_printf("hello %s !, addr %x = %d\n", "world", 0x60000, 0x60000);
+	//sn_printf("hello %s !, addr %x = %d\n", "world", 0x60000, 0x60000);
+	DMSG("hello %s!, addr %x = %d", "world", 0x60000, 0x60000);
 }
