@@ -1348,13 +1348,6 @@ uint32_t thread_rpc_cmd(uint32_t cmd, size_t num_params,
 	return ret;
 }
 
-static bool check_alloced_shm(paddr_t pa, size_t len, size_t align)
-{
-	if (pa & (align - 1))
-		return false;
-	return core_pbuf_is(CORE_MEM_NSEC_SHM, pa, len);
-}
-
 void thread_rpc_free_arg(uint64_t cookie)
 {
 	if (cookie) {
@@ -1379,11 +1372,6 @@ void thread_rpc_alloc_arg(size_t size, paddr_t *arg, uint64_t *cookie)
 
 	pa = reg_pair_to_64(rpc_args[1], rpc_args[2]);
 	co = reg_pair_to_64(rpc_args[4], rpc_args[5]);
-	if (!check_alloced_shm(pa, size, sizeof(uint64_t))) {
-		thread_rpc_free_arg(co);
-		pa = 0;
-		co = 0;
-	}
 
 	*arg = pa;
 	*cookie = co;
@@ -1456,11 +1444,6 @@ static void thread_rpc_alloc(size_t size, size_t align, unsigned int bt,
 
 	if (params[0].attr != OPTEE_MSG_ATTR_TYPE_TMEM_OUTPUT)
 		goto fail;
-
-	if (!check_alloced_shm(params[0].u.tmem.buf_ptr, size, align)) {
-		thread_rpc_free(bt, params[0].u.tmem.shm_ref);
-		goto fail;
-	}
 
 	*payload = params[0].u.tmem.buf_ptr;
 	*cookie = params[0].u.tmem.shm_ref;

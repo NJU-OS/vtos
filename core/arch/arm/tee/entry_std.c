@@ -352,13 +352,6 @@ void tee_entry_std(struct thread_smc_args *smc_args)
 		return;
 	}
 	parg = (uint64_t)smc_args->a1 << 32 | smc_args->a2;
-	if (!tee_pbuf_is_non_sec(parg, sizeof(struct optee_msg_arg)) ||
-	    !ALIGNMENT_IS_OK(parg, struct optee_msg_arg) ||
-	    !(arg = phys_to_virt(parg, MEM_AREA_NSEC_SHM))) {
-		EMSG("Bad arg address 0x%" PRIxPA, parg);
-		smc_args->a0 = OPTEE_SMC_RETURN_EBADADDR;
-		return;
-	}
 
 	num_params = arg->num_params;
 	if (!tee_pbuf_is_non_sec(parg, OPTEE_MSG_GET_ARG_SIZE(num_params))) {

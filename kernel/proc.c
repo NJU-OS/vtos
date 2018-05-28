@@ -47,6 +47,7 @@ linkage uint32_t name[num_stacks] \
 extern struct cpu_local cpu_locals[];
 struct proc procs[NUM_PROCS];
 struct list_head run_queues[NUM_PRIO];
+static uint64_t uart_base = 0x3100000;
 
 DECLARE_STACK(stack_proc, NUM_PROCS, STACK_THREAD_SIZE, static);
 
@@ -286,10 +287,13 @@ TEE_Result sn_tee_ta_exec(void* ta_addr, size_t pn)
 
 void sn_putc(uint8_t ch)
 {
-	uint8_t tp = (*(volatile uint8_t *)0x3100014) & 0x20;
-	while(tp == 0)
-		tp = (*(volatile uint8_t *)0x3100014) & 0x20;
-	*((volatile uint8_t*)0x3100000) = ch;
+	if(ch == '\n')
+		sn_putc('\r');
+	if(cpu_mmu_enabled())
+		uart_base = 0x84100000;
+	while(!((*(volatile uint8_t *)(uart_base+0x14)) & 0x20))
+		;
+	*((volatile uint8_t*)uart_base) = ch;
 }
 
 void sn_printf(const char* fmt, ...)
@@ -311,6 +315,6 @@ void sn_printf(const char* fmt, ...)
 }
 
 void sn_test(void) {
-	//sn_printf("hello %s !, addr %x = %d\n", "world", 0x60000, 0x60000);
-	DMSG("hello %s!, addr %x = %d", "world", 0x60000, 0x60000);
+	*((volatile uint8_t*)0x3100000) = 'A';
+	*((volatile uint8_t*)0x84100000) = 'B';
 }
