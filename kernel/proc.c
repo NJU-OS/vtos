@@ -317,7 +317,7 @@ void sn_printf(const char* fmt, ...)
 		i++;
 	}
 }
-
+void *phys_to_virt(paddr_t pa, enum teecore_memtypes m);
 void sn_test(void) {
-	DMSG("Hello DMSG%s!", "test");
+	DMSG("Hello GIC ADDR 0x%" PRIxVA "\n", (vaddr_t)phys_to_virt(0x3880000, MEM_AREA_IO_NSEC));
 }

@@ -408,8 +408,6 @@ static void init_runtime(unsigned long pageable_part __unused)
 	 */
 	memset(__bss_start, 0, __bss_end - __bss_start);
 
-	thread_init_boot_thread();
-
 	init_asan();
 	malloc_add_pool(__heap1_start, __heap1_end - __heap1_start);
 
@@ -604,19 +602,15 @@ static void init_primary_helper(unsigned long pageable_part,
 	 * its functions.
 	 */
 	thread_set_exceptions(THREAD_EXCP_ALL);
-	init_vfp_sec();
+	//init_vfp_sec();
 
 	init_runtime(pageable_part);
-
-	IMSG("Initializing (%s)\n", core_v_str);
 
 	thread_init_primary(generic_boot_get_handlers());
 	thread_init_per_cpu();
 	init_sec_mon(nsec_entry);
 	init_fdt(fdt);
 	main_init_gic();
-	// SNOWFLY
-	generic_s_timer_start();
 	init_vfp_nsec();
 
 	if (init_teecore() != TEE_SUCCESS)
