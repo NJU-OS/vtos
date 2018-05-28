@@ -89,15 +89,22 @@ FUNC _start , :
 	add	x1, x1, :lo12:__end
 	sub	x1, x1, x0
 	bl	inv_dcache_range
-	//bl sn_test
+	bl sn_test
 
 	bl	core_init_mmu_map
-dead:
-	b dead
 	bl	core_init_mmu_regs
 	bl	cpu_mmu_enable
 	bl	cpu_mmu_enable_icache
 	bl	cpu_mmu_enable_dcache
+	ldr x0, =0x41414141
+	ldr x1, =0x3100000
+	strb w0, [x1]
+	dmb sy
+	ldr x1, =0x84100000
+	strb w0, [x1]
+	dmb sy
+dead:
+	b dead
 
 	mov	x0, x19		/* pagable part address */
 	mov	x1, #-1
