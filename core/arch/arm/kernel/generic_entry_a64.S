@@ -94,15 +94,10 @@ FUNC _start , :
 	bl	core_init_mmu_map
 	bl	core_init_mmu_regs
 	bl	cpu_mmu_enable
+	bl  fix_uart_base
 	bl	cpu_mmu_enable_icache
 	bl	cpu_mmu_enable_dcache
-	ldr x0, =0x41414141
-	ldr x1, =0x3100000
-	strb w0, [x1]
-	dmb sy
-	ldr x1, =0x84100000
-	strb w0, [x1]
-	dmb sy
+	bl sn_test
 dead:
 	b dead
 

@@ -71,3 +71,23 @@
 * /lib/libutils/ext/trace.c
 * /core/arch/arm/kernel/trace_ext.c
 ```
+
+---
+#### 更新时间: 
+`2018-05-28`
+
+#### 负责人员：
+- snow
+
+#### 主要更新内容：
+- 完成页表初始化并启用MMU分页，通过串口验证分页后的地址转换正确性
+- 在分页启用前后分别调用sn_test函数进行串口输出
+
+#### 主要涉及的文件：
+
+```
+* /core/arch/arm/kernel/generic_entry_a64.S
+* /kernel/proc.h
+* /kernel/proc.c
+* /core/arch/arm/mm/core_mmu.c
+```
