@@ -91,3 +91,37 @@
 * /kernel/proc.c
 * /core/arch/arm/mm/core_mmu.c
 ```
+
+#### 主要更新内容：
+- 完成串口输出对DMSG调试接口的支持，可显示DMSG所在函数名和代码行号
+- sn_test函数对DMSG进行了测试，包括%s，%x和%d参数
+
+#### 主要涉及的文件：
+
+```
+* /core/arch/arm/kernel/generic_entry_a64.S
+* /kernel/proc.h
+* /kernel/proc.c
+* /lib/libutils/ext/trace.c
+* /core/arch/arm/kernel/trace_ext.c
+```
+
+---
+#### 更新时间: 
+`2018-05-28`
+
+#### 负责人员：
+- snow
+
+#### 主要更新内容：
+- 完成页表初始化并启用MMU分页，通过串口验证分页后的地址转换正确性
+- 在分页启用前后分别调用sn_test函数进行串口输出
+
+#### 主要涉及的文件：
+
+```
+* /core/arch/arm/kernel/generic_boot.c
+* /core/arch/arm/mm/tee_mmu.c
+* /core/arch/arm/kernel/thread.c
+```
+
