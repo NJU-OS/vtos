@@ -966,9 +966,6 @@ void teecore_init_ta_ram(void)
 	    !pe || (pe & CORE_MMU_USER_CODE_MASK))
 		panic("invalid TA RAM");
 
-	/* extra check: we could rely on  core_mmu_get_mem_by_type() */
-	if (!tee_pbuf_is_sec(ps, pe - ps))
-		panic("TA RAM is not secure");
 
 	if (!tee_mm_is_empty(&tee_mm_sec_ddr))
 		panic("TA RAM pool is not empty");

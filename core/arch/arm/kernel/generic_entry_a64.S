@@ -90,14 +90,16 @@ FUNC _start , :
 	sub	x1, x1, x0
 	bl	inv_dcache_range
 	bl sn_test
-dead:
-	b dead
 
 	bl	core_init_mmu_map
 	bl	core_init_mmu_regs
 	bl	cpu_mmu_enable
+	bl  fix_uart_base
 	bl	cpu_mmu_enable_icache
 	bl	cpu_mmu_enable_dcache
+	bl sn_test
+dead:
+	b dead
 
 	mov	x0, x19		/* pagable part address */
 	mov	x1, #-1
