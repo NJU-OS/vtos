@@ -5,7 +5,8 @@
 #include <mm/core_mmu.h>
 #include <string.h>
 #include <proc.h>
-
+#include <stdarg.h>
+#include <printk.h>
 
 #ifdef CFG_WITH_ARM_TRUSTED_FW
 #define STACK_TMP_OFFS      0
@@ -281,4 +282,35 @@ TEE_Result sn_tee_ta_exec(void* ta_addr, size_t pn)
     }
     enqueue(proc);
     return res;
+}
+
+void sn_putc(uint8_t ch)
+{
+	uint8_t tp = (*(volatile uint8_t *)0x3100014) & 0x20;
+	while(tp == 0)
+		tp = (*(volatile uint8_t *)0x3100014) & 0x20;
+	*((volatile uint8_t*)0x3100000) = ch;
+}
+
+void sn_printf(const char* fmt, ...)
+{
+	va_list ap;
+	char buf[MAX_PRINT_SIZE];
+	int res;
+	int i=0;
+
+	va_start(ap, fmt);
+	res = vsnprintk(buf, sizeof(buf), fmt, ap);
+	va_end(ap);
+
+	buf[res] = '\0';
+	while(buf[i] != '\0') {
+		sn_putc(buf[i]);
+		i++;
+	}
+}
+
+void sn_test(void) {
+	//sn_printf("hello %s !, addr %x = %d\n", "world", 0x60000, 0x60000);
+	DMSG("hello %s!, addr %x = %d", "world", 0x60000, 0x60000);
 }

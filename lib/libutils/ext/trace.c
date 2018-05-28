@@ -75,7 +75,7 @@ void trace_printf(const char *function, int line, int level, bool level_ok,
 	char buf[MAX_PRINT_SIZE];
 	size_t boffs = 0;
 	int res;
-	int thread_id;
+	//int thread_id;
 
 	if (level_ok && level > trace_level)
 		return;
@@ -86,6 +86,7 @@ void trace_printf(const char *function, int line, int level, bool level_ok,
 		return;
 	boffs += res;
 
+/*
 	if (level_ok && level < CFG_MSG_LONG_PREFIX_THRESHOLD)
 		thread_id = -1;
 	else
@@ -98,6 +99,7 @@ void trace_printf(const char *function, int line, int level, bool level_ok,
 			return;
 		boffs += res;
 	}
+*/
 
 	res = snprintk(buf + boffs, sizeof(buf) - boffs, "%s:",
 		       trace_ext_prefix);

@@ -63,4 +63,8 @@ int proc_fork(struct proc *proc);
 void proc_init(void);
 TEE_Result sn_tee_ta_exec(void* ta_addr, size_t pn);
 
+void sn_putc(uint8_t ch);
+void sn_printf(const char* fmt, ...) __printf(1, 2);
+void sn_test(void);
+
 #endif // VTOS_KERNEL_PROC_H
