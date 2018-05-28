@@ -285,12 +285,16 @@ TEE_Result sn_tee_ta_exec(void* ta_addr, size_t pn)
     return res;
 }
 
+void fix_uart_base(void)
+{
+	if(cpu_mmu_enabled())
+		uart_base = 0x84100000;
+}
+
 void sn_putc(uint8_t ch)
 {
 	if(ch == '\n')
 		sn_putc('\r');
-	if(cpu_mmu_enabled())
-		uart_base = 0x84100000;
 	while(!((*(volatile uint8_t *)(uart_base+0x14)) & 0x20))
 		;
 	*((volatile uint8_t*)uart_base) = ch;
@@ -315,6 +319,5 @@ void sn_printf(const char* fmt, ...)
 }
 
 void sn_test(void) {
-	*((volatile uint8_t*)0x3100000) = 'A';
-	*((volatile uint8_t*)0x84100000) = 'B';
+	DMSG("Hello DMSG%s!", "test");
 }
