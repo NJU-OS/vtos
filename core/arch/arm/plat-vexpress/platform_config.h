@@ -133,9 +133,8 @@
 #else /*CFG_WITH_PAGER*/
 
 /* Location of trusted dram on the base fvp */
-#define TZDRAM_BASE		0x06000000
-#define TZDRAM_SIZE		0x02000000
-//#define TZDRAM_SIZE		0x01000000
+#define TZDRAM_BASE		0x80000000
+#define TZDRAM_SIZE		0x04000000
 
 #endif /*CFG_WITH_PAGER*/
 
@@ -256,7 +255,7 @@
 #error "Unknown platform flavor"
 #endif
 
-#define CFG_TEE_RAM_VA_SIZE	(2 * 1024 * 1024)
+#define CFG_TEE_RAM_VA_SIZE	(4 * 1024 * 1024)
 
 #ifndef CFG_TEE_LOAD_ADDR
 #define CFG_TEE_LOAD_ADDR	CFG_TEE_RAM_START

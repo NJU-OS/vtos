@@ -74,7 +74,7 @@
 #include "core_mmu_private.h"
 
 #ifndef DEBUG_XLAT_TABLE
-#define DEBUG_XLAT_TABLE 0
+#define DEBUG_XLAT_TABLE 1
 #endif
 
 #if DEBUG_XLAT_TABLE
