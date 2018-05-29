@@ -92,6 +92,7 @@ const struct thread_handlers *generic_boot_get_handlers(void)
 
 //register_phys_mem(MEM_AREA_IO_SEC, GICD_BASE, GIC_DIST_REG_SIZE);
 //register_phys_mem(MEM_AREA_IO_SEC, GICC_BASE, GIC_DIST_REG_SIZE);
+register_phys_mem(MEM_AREA_IO_NSEC, 0x3880000, 0x10000);
 
 void main_init_gic(void)
 {
