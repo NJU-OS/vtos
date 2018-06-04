@@ -66,7 +66,6 @@
 
 .section .text.boot
 FUNC _start , :
-	// SNOW
 	adr	x0, reset_vect_table
 	msr	vbar_el1, x0
 	isb
@@ -97,13 +96,13 @@ FUNC _start , :
 	bl	cpu_mmu_enable_icache
 	bl	cpu_mmu_enable_dcache
 	bl sn_test
-dead:
-	b dead
 
 	mov	x0, x19		/* pagable part address */
 	mov	x1, #-1
 	mov	x2, x20		/* DT address */
 	bl	generic_boot_init_primary
+dead:
+	b dead
 
 	/*
 	 * In case we've touched memory that secondary CPUs will use before
@@ -112,13 +111,8 @@ dead:
 	 */
 	mov	x19, x0
 	adr	x0, __text_start
-#ifdef CFG_WITH_PAGER
-	adrp	x1, __init_end
-	add	x1, x1, :lo12:__init_end
-#else
 	adrp	x1, __end
 	add	x1, x1, :lo12:__end
-#endif
 	sub	x1, x1, x0
 	bl	flush_dcache_range
 
@@ -129,12 +123,6 @@ dead:
 	 * generic_boot.c.
 	 */
 	bl 	thread_clr_boot_thread
-
-#ifdef CFG_WITH_PAGER
-	//bl	snow_true
-#else
-	//bl	snow_false	
-#endif
 
 	/* Pass the vector address returned from main_init */
 	mov	x1, x19

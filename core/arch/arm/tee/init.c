@@ -46,6 +46,7 @@
 static void call_initcalls(void)
 {
 	initcall_t *call;
+	int num = 0;
 
 	for (call = &__initcall_start; call < &__initcall_end; call++) {
 		TEE_Result ret;
@@ -54,7 +55,9 @@ static void call_initcalls(void)
 			EMSG("Initial call 0x%08" PRIxVA " failed",
 			     (vaddr_t)call);
 		}
+		num++;
 	}
+	DMSG("call_initcall nums:%d", num);
 }
 
 TEE_Result init_teecore(void)
@@ -71,7 +74,7 @@ TEE_Result init_teecore(void)
 #endif
 
 	/* init support for future mapping of TAs */
-	teecore_init_pub_ram();
+	//teecore_init_pub_ram();
 
 	/* time initialization */
 	time_source_init();

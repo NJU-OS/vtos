@@ -393,10 +393,6 @@ static void init_asan(void)
 	/* Everything is tagged correctly, let's start address sanitizing. */
 	asan_start();
 }
-#else /*CFG_CORE_SANITIZE_KADDRESS*/
-static void init_asan(void)
-{
-}
 #endif /*CFG_CORE_SANITIZE_KADDRESS*/
 
 static void init_runtime(unsigned long pageable_part __unused)
@@ -408,7 +404,6 @@ static void init_runtime(unsigned long pageable_part __unused)
 	 */
 	memset(__bss_start, 0, __bss_end - __bss_start);
 
-	init_asan();
 	malloc_add_pool(__heap1_start, __heap1_end - __heap1_start);
 
 	/*
@@ -586,13 +581,16 @@ static void init_fdt(unsigned long phys_fdt)
 	}
 }
 #else
+/*
 static void init_fdt(unsigned long phys_fdt __unused)
 {
 }
+*/
 #endif /*!CFG_DT*/
 
+void thread_init_vbar(void);
 static void init_primary_helper(unsigned long pageable_part,
-				unsigned long nsec_entry, unsigned long fdt)
+				unsigned long nsec_entry __unused, unsigned long fdt __unused)
 {
 	/*
 	 * Mask asynchronous exceptions before switch to the thread vector
@@ -607,9 +605,10 @@ static void init_primary_helper(unsigned long pageable_part,
 	init_runtime(pageable_part);
 
 	thread_init_primary(generic_boot_get_handlers());
-	thread_init_per_cpu();
-	init_sec_mon(nsec_entry);
-	init_fdt(fdt);
+	//thread_init_per_cpu();
+	thread_init_vbar();
+	//init_sec_mon(nsec_entry);
+	//init_fdt(fdt);
 	main_init_gic();
 	init_vfp_nsec();
 
