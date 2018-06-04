@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, STMicroelectronics International N.V.
+ * Copyright (c) 2016, Linaro Limited
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,23 @@
  */
 
 /*
- * This file provides extensions for functions not defined in <string.h>
+ * The name of this file must not be modified
  */
 
-#ifndef STRING_EXT_H
-#define STRING_EXT_H
+#ifndef USER_TA_HEADER_DEFINES_H
+#define USER_TA_HEADER_DEFINES_H
 
-#include <stddef.h>
-#include <sys/cdefs.h>
+#include <lsh.h> /* To get the TA_LSH_UUID define */
 
-/*
- * Copy src to string dst of siz size.  At most siz-1 characters
- * will be copied.  Always NUL terminates (unless siz == 0).
- * Returns strlen(src); if retval >= siz, truncation occurred.
- */
-size_t strlcpy(char *dst, const char *src, size_t size);
-size_t strlcat(char *dst, const char *src, size_t size);
-char *strtok(char *string, const char *delim);
+#define TA_UUID TA_LSH_UUID
 
-/*
- * This memory compare function will compare two buffers in a constant time.
- *
- * Note that this function will not have same kind of return values as the
- * traditional libc memcmp which return either less than or greater than zero
- * depending on which string that is lexically greater. This function will
- * return 0 if it is a match, otherwise it will return a non-zero value.
- */
-int buf_compare_ct(const void *s1, const void *s2, size_t n);
+#define TA_FLAGS                    (TA_FLAG_MULTI_SESSION | TA_FLAG_EXEC_DDR)
+#define TA_STACK_SIZE               (2 * 1024)
+#define TA_DATA_SIZE                (32 * 1024)
 
-#endif /* STRING_EXT_H */
+#define TA_CURRENT_TA_EXT_PROPERTIES \
+    { "gp.ta.description", USER_TA_PROP_TYPE_STRING, \
+        "LSH TA" }, \
+    { "gp.ta.version", USER_TA_PROP_TYPE_U32, &(const uint32_t){ 0x0010 } }
+
+#endif /*USER_TA_HEADER_DEFINES_H*/
