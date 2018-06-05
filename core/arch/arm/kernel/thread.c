@@ -163,6 +163,7 @@ static bool thread_prealloc_rpc_cache;
 // SNOW
 unsigned int sn_optee_size = -1;
 
+/*
 static void init_canaries(void)
 {
 #ifdef CFG_WITH_STACK_CANARIES
@@ -184,8 +185,9 @@ static void init_canaries(void)
 #ifndef CFG_WITH_PAGER
 	INIT_CANARY(stack_thread);
 #endif
-#endif/*CFG_WITH_STACK_CANARIES*/
+#endif//CFG_WITH_STACK_CANARIES
 }
+*/
 
 #define CANARY_DIED(stack, loc, n) \
 	do { \
@@ -893,6 +895,7 @@ int thread_get_id(void)
 	return ct;
 }
 
+/*
 static void init_handlers(const struct thread_handlers *handlers)
 {
 	thread_std_smc_handler_ptr = handlers->std_smc;
@@ -905,6 +908,7 @@ static void init_handlers(const struct thread_handlers *handlers)
 	thread_system_off_handler_ptr = handlers->system_off;
 	thread_system_reset_handler_ptr = handlers->system_reset;
 }
+*/
 
 #ifdef CFG_WITH_PAGER
 static void init_thread_stacks(void)
@@ -940,26 +944,27 @@ static void init_thread_stacks(void)
 	}
 }
 #else
+/*
 static void init_thread_stacks(void)
 {
 	size_t n;
 
-	/* Assign the thread stacks */
+	// Assign the thread stacks 
 	for (n = 0; n < CFG_NUM_THREADS; n++) {
 		if (!thread_init_stack(n, GET_STACK(stack_thread[n])))
 			panic("thread_init_stack failed");
 	}
-}
+}*/
 #endif /*CFG_WITH_PAGER*/
 
-void thread_init_primary(const struct thread_handlers *handlers)
+void thread_init_primary(const struct thread_handlers *handlers __maybe_unused)
 {
 	init_handlers(handlers);
 
 	/* Initialize canaries around the stacks */
-	init_canaries();
+	//init_canaries();
 
-	init_thread_stacks();
+	//init_thread_stacks();
 	pgt_init();
 }
 

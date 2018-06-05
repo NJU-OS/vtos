@@ -964,11 +964,11 @@ void teecore_init_ta_ram(void)
 
 	if (!ps || (ps & CORE_MMU_USER_CODE_MASK) ||
 	    !pe || (pe & CORE_MMU_USER_CODE_MASK))
-		panic("invalid TA RAM");
+		DMSG("invalid TA RAM");
 
 
 	if (!tee_mm_is_empty(&tee_mm_sec_ddr))
-		panic("TA RAM pool is not empty");
+		DMSG("TA RAM pool is not empty");
 
 	/* remove previous config and init TA ddr memory pool */
 	tee_mm_final(&tee_mm_sec_ddr);
