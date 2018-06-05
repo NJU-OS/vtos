@@ -959,7 +959,7 @@ static void init_thread_stacks(void)
 
 void thread_init_primary(const struct thread_handlers *handlers __maybe_unused)
 {
-	//init_handlers(handlers);
+	init_handlers(handlers);
 
 	/* Initialize canaries around the stacks */
 	//init_canaries();
