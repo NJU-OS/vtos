@@ -399,6 +399,7 @@ __weak void plat_prng_add_jitter_entropy_norpc(void)
 #endif
 }
 
+/*
 static TEE_Result tee_cryp_init(void)
 {
 	if (crypto_ops.init)
@@ -406,5 +407,5 @@ static TEE_Result tee_cryp_init(void)
 
 	return TEE_SUCCESS;
 }
-
-service_init(tee_cryp_init);
+*/
+//service_init(tee_cryp_init);

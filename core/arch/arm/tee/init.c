@@ -47,7 +47,7 @@ static void call_initcalls(void)
 {
 	initcall_t *call;
 	int num = 0;
-
+	
 	for (call = &__initcall_start; call < &__initcall_end; call++) {
 		TEE_Result ret;
 		ret = (*call)();
@@ -75,13 +75,10 @@ TEE_Result init_teecore(void)
 
 	/* init support for future mapping of TAs */
 	//teecore_init_pub_ram();
-
 	/* time initialization */
 	time_source_init();
-
 	/* call pre-define initcall routines */
 	call_initcalls();
-
 	IMSG("Initialized");
 	return TEE_SUCCESS;
 }

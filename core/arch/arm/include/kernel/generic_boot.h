@@ -31,8 +31,9 @@
 #include <types_ext.h>
 
 #if defined(CFG_WITH_ARM_TRUSTED_FW)
-// SNOWFLY
-void generic_s_timer_start(void);
+//rex_do
+void init_generic_timer(void);
+
 unsigned long cpu_on_handler(unsigned long a0, unsigned long a1);
 struct thread_vector_table *
 generic_boot_init_primary(unsigned long pageable_part, unsigned long unused,

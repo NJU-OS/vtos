@@ -95,13 +95,14 @@ FUNC _start , :
 	bl  fix_uart_base
 	bl	cpu_mmu_enable_icache
 	bl	cpu_mmu_enable_dcache
-	bl sn_test
+	//bl sn_test
 
 	mov	x0, x19		/* pagable part address */
 	mov	x1, #-1
 	mov	x2, x20		/* DT address */
 	bl	generic_boot_init_primary
 dead:
+	wfi
 	b dead
 
 	/*

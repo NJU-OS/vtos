@@ -405,7 +405,6 @@ static void gic_op_add(struct itr_chip *chip, size_t it,
 static void gic_op_enable(struct itr_chip *chip, size_t it)
 {
 	struct gic_data *gd = container_of(chip, struct gic_data, chip);
-
 	if (it >= gd->max_it)
 		panic();
 
@@ -415,7 +414,7 @@ static void gic_op_enable(struct itr_chip *chip, size_t it)
 static void gic_op_disable(struct itr_chip *chip, size_t it)
 {
 	struct gic_data *gd = container_of(chip, struct gic_data, chip);
-
+	
 	if (it >= gd->max_it)
 		panic();
 

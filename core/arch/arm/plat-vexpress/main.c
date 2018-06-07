@@ -55,12 +55,14 @@
 // SNOWFLY
 struct list_head timer = {&timer, &timer};
 struct list_head *timer_lst = &timer;
-static void main_fiq(void);
+
+//rex_do
+static void main_irq(void);
 
 static const struct thread_handlers handlers = {
 	.std_smc = tee_entry_std,
 	.fast_smc = tee_entry_fast,
-	.nintr = main_fiq,
+	.nintr = main_irq,
 #if defined(CFG_WITH_ARM_TRUSTED_FW)
 	.cpu_on = cpu_on_handler,
 	.cpu_off = pm_do_nothing,
@@ -79,9 +81,7 @@ static const struct thread_handlers handlers = {
 };
 
 static struct gic_data gic_data;
-static struct pl011_data console_data __early_bss;
 
-//register_phys_mem(MEM_AREA_IO_SEC, CONSOLE_UART_BASE, PL011_REG_SIZE);
 
 const struct thread_handlers *generic_boot_get_handlers(void)
 {
@@ -90,58 +90,48 @@ const struct thread_handlers *generic_boot_get_handlers(void)
 
 #ifdef GIC_BASE
 
-//register_phys_mem(MEM_AREA_IO_SEC, GICD_BASE, GIC_DIST_REG_SIZE);
-//register_phys_mem(MEM_AREA_IO_SEC, GICC_BASE, GIC_DIST_REG_SIZE);
-register_phys_mem(MEM_AREA_IO_NSEC, 0x3880000, 0x10000);
+//rex_do
+register_phys_mem(MEM_AREA_IO_NSEC, GIC_BASE, GIC_DIST_REG_SIZE);
+
+static TEE_Result init_timer(void);
 
 void main_init_gic(void)
 {
 	vaddr_t gicc_base;
 	vaddr_t gicd_base;
-
 	gicc_base = (vaddr_t)phys_to_virt(GIC_BASE + GICC_OFFSET,
-					  MEM_AREA_IO_SEC);
+					  MEM_AREA_IO_NSEC);
 	gicd_base = (vaddr_t)phys_to_virt(GIC_BASE + GICD_OFFSET,
-					  MEM_AREA_IO_SEC);
+					  MEM_AREA_IO_NSEC);
 	if (!gicc_base || !gicd_base)
 		panic();
 
-#if defined(PLATFORM_FLAVOR_fvp) || defined(PLATFORM_FLAVOR_juno) || \
-	defined(PLATFORM_FLAVOR_qemu_armv8a)
-	/* On ARMv8, GIC configuration is initialized in ARM-TF */
 	gic_init_base_addr(&gic_data, gicc_base, gicd_base);
-#else
-	/* Initialize GIC */
-	gic_init(&gic_data, gicc_base, gicd_base);
-#endif
 	itr_init(&gic_data.chip);
 }
 #endif
 
-// SNOWFLY
+//rex_do
 #define CNTP_CTL_ENABLE_SHIFT   0
 #define set_cntp_ctl_enable(x)  (x |= 1 << CNTP_CTL_ENABLE_SHIFT)
-void generic_s_timer_start(void)
+
+void init_generic_timer(void)
 {
-	
 	uint64_t cval;
 	uint32_t ctl = 0;
 
-	
-	// The timer will fire every 0.5 second 
-	cval = read_cntpct_el0() + (read_cntfrq_el0() * 8);
-	write_cntps_cval_el1(cval);
+	cval = read_cntpct_el0() + (read_cntfrq_el0() / 2);
+	write_cntp_cval_el0(cval);
 
-	//Enable the secure physical timer
 	set_cntp_ctl_enable(ctl);
-	ctl |= 1 << 0; 
-	write_cntps_ctl_el1(ctl);
+	write_cntp_ctl_el0(ctl);
 }
 
-static void main_fiq(void)
+static void main_irq(void)
 {
-	struct proc *p = NULL;
+	//struct proc *p = NULL;
 	gic_it_handle(&gic_data);
+	/*
 	p = get_proc();
 	p->p_misc_flags |= P_INTER;
 	if(p == NULL)
@@ -151,17 +141,21 @@ static void main_fiq(void)
 	else
 		enqueue(p);
 	sn_sched();
+	*/
 }
 
 extern unsigned int sn_optee_size;
 void console_init(void)
 {
 	//memcpy((void*)0x6100000ul, (void*)(0x6000000ul+sn_optee_size-0x226c4), 0x226c4u);
+	/*
 	pl011_init(&console_data, CONSOLE_UART_BASE, CONSOLE_UART_CLK_IN_HZ,
 		   CONSOLE_BAUDRATE);
 	register_serial_console(&console_data.chip);
+	*/
 }
 
+/*
 #ifdef IT_CONSOLE_UART
 static enum itr_return console_itr_cb(struct itr_handler *h __unused)
 {
@@ -190,26 +184,29 @@ static TEE_Result init_console_itr(void)
 }
 driver_init(init_console_itr);
 #endif
+*/
 
-// SNOWFLY
-#ifdef IT_SECURE_TIMER
+//rex_do
+#ifdef IT_GENERIC_TIMER
 static enum itr_return timer_itr_cb(struct itr_handler *h __unused)
 {
-	static uint32_t count = 0;
-	struct list_head *lst;
-	struct list_head *prev = NULL;
+	//static uint32_t count = 0;
+	//struct list_head *lst;
+	//struct list_head *prev = NULL;
 	/* Ensure that the timer did assert the interrupt */
-	assert(read_cntps_ctl_el1() >> 2 & 1);
+	assert(read_cntp_ctl_el0() >> 2 & 1);
 
 	/*
 	 * Disable the timer and reprogram it. The barriers ensure that there is
 	 * no reordering of instructions around the reprogramming code.
 	 */
 	isb();
-	write_cntps_ctl_el1(0);
+	write_cntp_ctl_el0(0);
 
-	generic_s_timer_start();
+	init_generic_timer();
 	isb();
+	DMSG("-----clock interrupt-----\n");
+	/*
 	if(count < 12) {
 	//DMSG("###DEBUG###: cpu %" PRIu32, (uint32_t)get_core_pos());
 		trace_ext_puts("-------------------clock interrupt, schedule process-----------------------\n");
@@ -241,26 +238,30 @@ static enum itr_return timer_itr_cb(struct itr_handler *h __unused)
 		prev = lst;
 		lst = lst->next;
 	}
+	*/
 	return ITRR_HANDLED;
 }
 
 static struct itr_handler timer_itr = {
-	.it = IT_SECURE_TIMER,
+	.it = IT_GENERIC_TIMER,
 	.flags = ITRF_TRIGGER_LEVEL,
 	.handler = timer_itr_cb,
 };
 KEEP_PAGER(timer_itr);
 
-static TEE_Result init_secure_timer(void)
+static TEE_Result init_timer(void)
 {
+	
 	itr_add(&timer_itr);
-	itr_enable(IT_SECURE_TIMER);
+	itr_enable(IT_GENERIC_TIMER);
 	return TEE_SUCCESS;
 }
-driver_init(init_secure_timer);
+driver_init(init_timer);
 #endif
 
+/*
 #ifdef CFG_TZC400
+
 register_phys_mem(MEM_AREA_IO_SEC, TZC400_BASE, TZC400_REG_SIZE);
 
 static TEE_Result init_tzc400(void)
@@ -282,4 +283,6 @@ static TEE_Result init_tzc400(void)
 }
 
 service_init(init_tzc400);
-#endif /*CFG_TZC400*/
+
+#endif
+*/

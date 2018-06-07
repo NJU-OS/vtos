@@ -70,9 +70,10 @@ void itr_handle(size_t it)
 	}
 }
 
+//rex_do
 void itr_add(struct itr_handler *h)
 {
-	itr_chip->ops->add(itr_chip, h->it, h->flags);
+//	itr_chip->ops->add(itr_chip, h->it, h->flags);
 	SLIST_INSERT_HEAD(&handlers, h, link);
 }
 

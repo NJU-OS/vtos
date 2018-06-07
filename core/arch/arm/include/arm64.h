@@ -307,9 +307,12 @@ DEFINE_REG_READ_FUNC_(cntpct, uint64_t, cntpct_el0)
 // SNOWFLY
 DEFINE_U64_REG_READ_FUNC(cntpct_el0)
 DEFINE_U64_REG_READ_FUNC(cntfrq_el0)
-DEFINE_U64_REG_READ_FUNC(cntps_ctl_el1)
-DEFINE_U64_REG_WRITE_FUNC(cntps_cval_el1)
-DEFINE_U64_REG_WRITE_FUNC(cntps_ctl_el1)
+
+//rex_do
+DEFINE_U64_REG_READ_FUNC(cntp_ctl_el0)
+DEFINE_U64_REG_WRITE_FUNC(cntp_cval_el0)
+DEFINE_U64_REG_WRITE_FUNC(cntp_ctl_el0)
+
 
 #endif /*ASM*/
 

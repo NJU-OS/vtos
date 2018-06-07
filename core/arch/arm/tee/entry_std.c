@@ -389,6 +389,7 @@ void sn_tee_entry_std(struct thread_smc_args *smc_args)
 	//smc_args->a0 = OPTEE_SMC_RETURN_OK;
 }
 
+/*
 static TEE_Result default_mobj_init(void)
 {
 	shm_mobj = mobj_phys_alloc(default_nsec_shm_paddr,
@@ -411,5 +412,5 @@ static TEE_Result default_mobj_init(void)
 
 	return TEE_SUCCESS;
 }
-
-driver_init_late(default_mobj_init);
+*/
+//driver_init_late(default_mobj_init);

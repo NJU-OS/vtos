@@ -30,8 +30,8 @@
 
 #include <stdint.h>
 
-// SNOWFLY
-#define IT_SECURE_TIMER 29 
+//rex_do
+#define IT_GENERIC_TIMER	30
 
 /* Make stacks aligned to data cache line length */
 #define STACK_ALIGNMENT		64
@@ -51,7 +51,9 @@
 
 #if defined(PLATFORM_FLAVOR_fvp)
 
-#define GIC_BASE		0x2c000000
+//rex_do
+#define GIC_BASE                0x03880000
+
 #define UART0_BASE		0x1c090000
 #define UART1_BASE		0x1c0a0000
 #define UART2_BASE		0x1c0b0000
@@ -143,8 +145,9 @@
 #define CFG_SHMEM_START		(DRAM0_BASE + 0x3000000)
 #define CFG_SHMEM_SIZE		0x200000
 
-#define GICC_OFFSET		0x0
-#define GICD_OFFSET		0x3000000
+//rex_do
+#define GICC_OFFSET		0x2000
+#define GICD_OFFSET		0x1000
 
 #elif defined(PLATFORM_FLAVOR_juno)
 /*
@@ -258,7 +261,7 @@
 #define CFG_TEE_RAM_VA_SIZE	(4 * 1024 * 1024)
 
 #ifndef CFG_TEE_LOAD_ADDR
-#define CFG_TEE_LOAD_ADDR	CFG_TEE_RAM_START
+#define CFG_TEE_LOAD_ADDR	(CFG_TEE_RAM_START + 0x80000)
 #endif
 
 #ifdef CFG_WITH_PAGER
