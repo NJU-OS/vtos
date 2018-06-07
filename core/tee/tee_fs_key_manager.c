@@ -56,7 +56,7 @@ struct tee_fs_ssk {
 };
 
 static struct tee_fs_ssk tee_fs_ssk;
-static uint8_t string_for_ssk_gen[] = "ONLY_FOR_tee_fs_ssk";
+//static uint8_t string_for_ssk_gen[] = "ONLY_FOR_tee_fs_ssk";
 
 
 static TEE_Result do_hmac(uint8_t *out_key, uint32_t out_key_size,
@@ -160,19 +160,21 @@ static TEE_Result generate_fek(uint8_t *key, uint8_t len)
 	return crypto_ops.prng.read(key, len);
 }
 
+/*
 static TEE_Result tee_fs_init_key_manager(void)
 {
 	int res = TEE_SUCCESS;
 	struct tee_hw_unique_key huk;
 	uint8_t chip_id[TEE_FS_KM_CHIP_ID_LENGTH];
 	uint8_t message[sizeof(chip_id) + sizeof(string_for_ssk_gen)];
+*/
 
 	/* Secure Storage Key Generation:
 	 *
 	 *     SSK = HMAC(HUK, message)
 	 *     message := concatenate(chip_id, static string)
 	 * */
-	tee_otp_get_hw_unique_key(&huk);
+/*	tee_otp_get_hw_unique_key(&huk);
 	tee_otp_get_die_id(chip_id, sizeof(chip_id));
 
 	memcpy(message, chip_id, sizeof(chip_id));
@@ -188,7 +190,7 @@ static TEE_Result tee_fs_init_key_manager(void)
 
 	return res;
 }
-
+*/
 TEE_Result tee_fs_generate_fek(uint8_t *buf, int buf_size)
 {
 	TEE_Result res;
@@ -336,4 +338,4 @@ exit:
 	return res;
 }
 
-service_init_late(tee_fs_init_key_manager);
+//service_init_late(tee_fs_init_key_manager);

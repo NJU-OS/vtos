@@ -47,6 +47,7 @@
 
 #ifndef ASM
 
+
 struct thread_vector_table {
 	uint32_t std_smc_entry;
 	uint32_t fast_smc_entry;
@@ -308,8 +309,10 @@ void thread_restore_foreign_intr(void);
  * thread_*_exceptions() functions below.
  * These definitions are compatible with both ARM32 and ARM64.
  */
-#define THREAD_EXCP_FOREIGN_INTR	(ARM32_CPSR_I >> ARM32_CPSR_F_SHIFT)
-#define THREAD_EXCP_NATIVE_INTR		(ARM32_CPSR_F >> ARM32_CPSR_F_SHIFT)
+
+//rex_do
+#define THREAD_EXCP_FOREIGN_INTR	(ARM32_CPSR_F >> ARM32_CPSR_F_SHIFT)
+#define THREAD_EXCP_NATIVE_INTR		(ARM32_CPSR_I >> ARM32_CPSR_F_SHIFT)
 #define THREAD_EXCP_ALL			(THREAD_EXCP_FOREIGN_INTR	\
 					| THREAD_EXCP_NATIVE_INTR	\
 					| (ARM32_CPSR_A >> ARM32_CPSR_F_SHIFT))
