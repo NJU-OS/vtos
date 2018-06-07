@@ -895,7 +895,7 @@ int thread_get_id(void)
 	return ct;
 }
 
-/*
+
 static void init_handlers(const struct thread_handlers *handlers)
 {
 	thread_std_smc_handler_ptr = handlers->std_smc;
@@ -908,7 +908,7 @@ static void init_handlers(const struct thread_handlers *handlers)
 	thread_system_off_handler_ptr = handlers->system_off;
 	thread_system_reset_handler_ptr = handlers->system_reset;
 }
-*/
+
 
 #ifdef CFG_WITH_PAGER
 static void init_thread_stacks(void)

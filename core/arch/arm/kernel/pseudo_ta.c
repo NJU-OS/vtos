@@ -220,6 +220,7 @@ extern const struct pseudo_ta_head __start_ta_head_section;
 extern const struct pseudo_ta_head __stop_ta_head_section;
 
 /* Insures declared pseudo TAs conforms with core expectations */
+/*
 static TEE_Result verify_pseudo_tas_conformance(void)
 {
 	const struct pseudo_ta_head *start = &__start_ta_head_section;
@@ -229,7 +230,7 @@ static TEE_Result verify_pseudo_tas_conformance(void)
 	for (pta = start; pta < end; pta++) {
 		const struct pseudo_ta_head *pta2;
 
-		/* PTAs must all have a specific UUID */
+		// PTAs must all have a specific UUID 
 		for (pta2 = pta + 1; pta2 < end; pta2++)
 			if (!memcmp(&pta->uuid, &pta2->uuid, sizeof(TEE_UUID)))
 				goto err;
@@ -246,7 +247,9 @@ err:
 	panic("pta");
 }
 
-service_init(verify_pseudo_tas_conformance);
+*/
+//rex_do
+//service_init(verify_pseudo_tas_conformance);
 
 /*-----------------------------------------------------------------------------
  * Initialises a session based on the UUID or ptr to the ta
