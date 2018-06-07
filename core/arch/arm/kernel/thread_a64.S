@@ -495,8 +495,8 @@ sync_el1_sp0:
 
 	.align	7
 irq_el1_sp0:
-	store_xregs sp, THREAD_CORE_LOCAL_X0, 0, 3
-	b	elx_irq
+	store_xregs sp, CPU_LOCAL_X0, 0, 3
+	b	elx_fiq
 	check_vector_size irq_el1_sp0
 
 	.align	7
@@ -931,6 +931,7 @@ LOCAL_FUNC elx_fiq , :
 	 */
 	// SNOWFLY
 	//ldr x0, [sp, #THREAD_CORE_LOCAL_CURR_THREAD]
+/*
 	ldr x0, [sp, #CPU_LOCAL_CUR_PROC]
 	cmp x0, #-1
 	b.eq old_func
@@ -946,6 +947,7 @@ LOCAL_FUNC elx_fiq , :
 	store_xregs x0, PCB_REGS_X4, 4, 30
 	load_xregs sp, CPU_LOCAL_X0, 4, 7 
 	store_xregs x0, PCB_REGS_X0, 4, 7
+*/
 /*
 	ldr	x1, [sp, #CPU_LOCAL_TMP_STACK]
 	msr	spsel, #0
@@ -972,19 +974,20 @@ old_func:
 	/* Switch to SP_EL0 */
 	msr	spsel, #0
 	mov	sp, x1
-
+	
 	/*
 	 * Save registers on stack that can be corrupted by a call to
 	 * a C function
 	 */
 	/* Make room for struct elx_fiq_rec */
 	sub	sp, sp, #ELX_FIQ_REC_SIZE
+
 	/* Store x4..x18 */
 	store_xregs sp, ELX_FIQ_REC_X(4), 4, 18
+
 	/* Store lr and original sp_el0 */
 	stp	x30, x2, [sp, #ELX_FIQ_REC_LR]
-
-	bl	thread_check_canaries
+	//bl	thread_check_canaries
 	adr	x16, thread_nintr_handler_ptr
 	ldr	x16, [x16]
 	blr	x16
@@ -1002,12 +1005,14 @@ old_func:
 	msr	spsel, #1
 
 	/* Update core local flags */
+/*
 	ldr	w0, [sp, #THREAD_CORE_LOCAL_FLAGS]
 	lsr	w0, w0, #THREAD_CLF_SAVED_SHIFT
 	str	w0, [sp, #THREAD_CORE_LOCAL_FLAGS]
-
+*/
 	/* Restore x0..x3 */
-	load_xregs sp, THREAD_CORE_LOCAL_X0, 0, 3
+	//load_xregs sp, THREAD_CORE_LOCAL_X0, 0, 3
+	load_xregs sp, CPU_LOCAL_X0, 0, 3
 
 	/* Return from exception */
 	eret

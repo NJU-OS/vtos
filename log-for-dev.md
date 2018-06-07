@@ -9,7 +9,7 @@
 样例：
 
 ---
-#### 更新时间: 
+#### 更新时间：
 `2018-05-16`
 
 #### 负责人员：
@@ -31,7 +31,7 @@
 
 
 ---
-#### 更新时间: 
+#### 更新时间： 
 `2018-05-24`
 
 #### 负责人员：
@@ -52,7 +52,7 @@
 ```
 
 ---
-#### 更新时间: 
+#### 更新时间： 
 `2018-05-25`
 
 #### 负责人员：
@@ -73,7 +73,7 @@
 ```
 
 ---
-#### 更新时间: 
+#### 更新时间：
 `2018-05-28`
 
 #### 负责人员：
@@ -107,7 +107,7 @@
 ```
 
 ---
-#### 更新时间: 
+#### 更新时间： 
 `2018-05-28`
 
 #### 负责人员：
@@ -123,5 +123,31 @@
 * /core/arch/arm/kernel/generic_boot.c
 * /core/arch/arm/mm/tee_mmu.c
 * /core/arch/arm/kernel/thread.c
+```
+
+---
+#### 更新时间： 
+`2018-06-06`
+
+#### 负责人员：
+- rex
+
+#### 主要更新内容：
+
+#### 主要涉及的文件：
+
+```
+* /core/arch/arm/kernel/generic_boot.c
+* /core/arch/arm/include/kernel/thread.h
+* /core/arch/arm/include/kernel/generic_boot.h
+* /core/arch/arm/plat-vexpress/main.c
+* /core/arch/arm/plat-vexpress/platform_config.h
+* /core/arch/arm/include/arm64.h
+* /core/arch/arm/kernel/thread_a64.S
+* /core/arch/arm/kernel/pseudo_ta.c
+* /core/tee/tee_cryp_utl.c
+* /core/tee/tee_fs_key_manager.c
+* /core/arch/arm/tee/entry_std.c
+* /core/kernel/interrupt.c
 ```
 

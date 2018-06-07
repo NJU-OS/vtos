@@ -601,20 +601,22 @@ static void init_primary_helper(unsigned long pageable_part,
 	 */
 	thread_set_exceptions(THREAD_EXCP_ALL);
 	//init_vfp_sec();
-
 	init_runtime(pageable_part);
-
 	thread_init_primary(generic_boot_get_handlers());
 	//thread_init_per_cpu();
 	thread_init_vbar();
 	//init_sec_mon(nsec_entry);
 	//init_fdt(fdt);
 	main_init_gic();
+	init_generic_timer();
 	init_vfp_nsec();
 
 	if (init_teecore() != TEE_SUCCESS)
 		panic();
-	DMSG("Primary CPU switching to normal world boot\n");
+	
+	proc_init();
+	thread_unmask_exceptions(~THREAD_EXCP_NATIVE_INTR);
+	DMSG("Enable IRQ Interrupt\n");
 }
 
 static void init_secondary_helper(unsigned long nsec_entry)
