@@ -21,12 +21,13 @@ comp-aflags$(sm) =
 comp-cppflags$(sm) =
 
 ifndef NOWERROR
-comp-cflags$(sm)	+= -Werror
+# comp-cflags$(sm)	+= -Werror
 endif
 comp-cflags$(sm)  	+= -fdiagnostics-show-option
 
+#-Wall -Wcast-align  
 comp-cflags-warns-high = \
-	-Wall -Wcast-align  \
+	-Wall -Wno-shift-negative-value \
 	-Werror-implicit-function-declaration -Wextra -Wfloat-equal \
 	-Wformat-nonliteral -Wformat-security -Wformat=2 -Winit-self \
 	-Wmissing-declarations -Wmissing-format-attribute \

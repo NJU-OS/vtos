@@ -42,9 +42,14 @@ test1: all
 test2: all
 	$(MAKE) -C $(ROOT)/vtos/servers/test2 TA_CROSS_COMPILE="$(CCACHE) $(ROOT)/toolchains/aarch64/bin/aarch64-linux-gnu-" TA_DEV_KIT_DIR=$(ROOT)/vtos/out/arm/export-ta_arm64
 
-simage: test1 test2
+shell: all
+	$(MAKE) -C $(ROOT)/vtos/servers/shell TA_CROSS_COMPILE="$(CCACHE) $(ROOT)/toolchains/aarch64/bin/aarch64-linux-gnu-" TA_DEV_KIT_DIR=$(ROOT)/vtos/out/arm/export-ta_arm64
+
+
+simage: test1 test2 shell
 	@cp $(ROOT)/vtos/servers/test1/ta/test1.ta $(ROOT)/vtos/test1.ta
 	@cp $(ROOT)/vtos/servers/test2/ta/test2.ta $(ROOT)/vtos/test2.ta
+	@cp $(ROOT)/vtos/servers/shell/ta/shell.ta $(ROOT)/vtos/shell.ta
 	@-rm $(ROOT)/vtos/out/arm/core/vtos.bin
 	$(MAKE) all
 
