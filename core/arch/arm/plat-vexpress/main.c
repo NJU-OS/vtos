@@ -206,40 +206,19 @@ static enum itr_return timer_itr_cb(struct itr_handler *h __unused)
 	init_generic_timer();
 	isb();
 	DMSG("-----clock interrupt-----\n");
-	/*
-	if(count < 12) {
-	//DMSG("###DEBUG###: cpu %" PRIu32, (uint32_t)get_core_pos());
-		trace_ext_puts("-------------------clock interrupt, schedule process-----------------------\n");
-		count++;
-	}
-	
-	lst = timer_lst->next;
-	while(lst != timer_lst) {
-		struct sleep_t *st = container_of(lst, struct sleep_t, link);
-		if(st->res > 1)
-			st->res--;
-		else {
-			struct proc *p = st->proc;
-			enqueue_head(p);
-			DMSG("       ************ process %d wake up! **************\n", p->p_endpoint);
-			if(prev == NULL) {
-				timer_lst->next = lst->next;
-				lst->next->prev = timer_lst;
-				lst = lst->next;
-				continue;
-			}else{
-				prev->next = lst->next;
-				lst->next->prev = prev;
-				lst = lst->next;
-				continue;
-			}
-			free(st);
-		}
-		prev = lst;
-		lst = lst->next;
-	}
-	*/
-	return ITRR_HANDLED;
+    return ITRR_HANDLED;
+}
+
+static enum itr_return serial_itr_cb(struct itr_handler *h __unused)
+{
+    assert(read_cntp_ctl_el0() >> 2 & 1);
+    isb();
+    write_cntp_ctl_el0(0);
+
+    /* init the serial interrupt things */;
+    isb();
+    DMSG("----- serial interrupt -----\n");
+    return ITRR_HANDLED;
 }
 
 static struct itr_handler timer_itr = {
@@ -251,12 +230,29 @@ KEEP_PAGER(timer_itr);
 
 static TEE_Result init_timer(void)
 {
-	
 	itr_add(&timer_itr);
 	itr_enable(IT_GENERIC_TIMER);
 	return TEE_SUCCESS;
 }
 driver_init(init_timer);
+
+/*
+ * add serial interrupt process
+ */
+static struct itr_handler serial_itr = {
+    .it = UART_COM1_IT_NUM,
+    .flags = ITRF_TRIGGER_LEVEL,
+    .handler = serial_itr_cb,
+};
+KEEP_PAGER(serial_itr);
+
+static TEE_Result init_serial(void)
+{
+    itr_add(&serial_itr);
+    itr_enable(UART_COM1_IT_NUM);
+    return TEE_SUCCESS;
+}
+driver_init(init_serial);
 #endif
 
 /*

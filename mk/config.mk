@@ -231,3 +231,6 @@ CFG_GP_SOCKETS ?= y
 # Enable Secure Data Path support in OP-TEE core (TA may be invoked with
 # invocation parameters referring to specific secure memories).
 CFG_SECURE_DATA_PATH ?= n
+
+# Enable tx2 Uart
+CFG_TX2_UART ?= y
